@@ -1,0 +1,18 @@
+{
+  "nom": "SmartBuy",
+  "couleurs": {
+    "primaire": "#0F766E",
+    "succes": "#16A34A",
+    "attention": "#F59E0B",
+    "danger": "#DC2626",
+    "revenu": "#16A34A",
+    "depense": "#DC2626",
+    "graphique": ["#0F766E", "#F59E0B", "#6366F1", "#EC4899", "#0EA5E9", "#84CC16", "#F97316", "#64748B"]
+  },
+  "seuilsJauge": { "attention": 80, "danger": 100 },
+  "rayons": { "carte": 16, "champ": 12, "bouton": 12 },
+  "espacements": { "xs": 4, "s": 8, "m": 12, "l": 16, "xl": 24 },
+  "typographie": { "police": "Roboto (Material 3 par défaut)", "montantPrincipal": "headlineMedium, gras" },
+  "monnaie": { "code": "TND", "symbole": "DT", "decimales": 3, "locale": "fr_FR" },
+  "navigation": ["Accueil", "Opérations", "Prix", "Listes", "Assistant"]
+}

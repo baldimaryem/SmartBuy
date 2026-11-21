@@ -1,0 +1,100 @@
+# =====================================================================
+# Configuration de l'API SmartBuy
+# Chaque valeur ${NOM:defaut} peut être remplacée par une variable
+# d'environnement (ex. DB_HOST=192.168.1.10) sans modifier ce fichier.
+# =====================================================================
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: smartbuy-api
+
+  # --- Connexion à Oracle (JDBC) ---------------------------------------
+  # Format : jdbc:oracle:thin:@//<hôte>:<port>/<nom de service>
+  # Base utilisée : Oracle Database 19c installée sur le poste (service ORCL), schéma SMARTBUY.
+  datasource:
+    url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:1521}/${DB_SERVICE:orcl}
+    username: ${DB_USER:smartbuy}
+    password: ${DB_PASSWORD:smartbuy}
+    driver-class-name: oracle.jdbc.OracleDriver
+    # Pool de connexions Hikari : les connexions sont ouvertes une fois puis réutilisées.
+    hikari:
+      pool-name: SmartBuyPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  jpa:
+    # Le schéma est créé par db/schema.sql (voir DatabaseInitializer), jamais par Hibernate :
+    # on garde ainsi la maîtrise des types Oracle (NUMBER(12,3), CHAR(1), CHECK...).
+    hibernate:
+      ddl-auto: none
+    # Pas de session JPA ouverte pendant l'écriture du JSON : tout est préparé dans les services.
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  # --- E-mails : Gmail (SMTP) -------------------------------------------
+  # Identifiants : JAMAIS ici. Ils sont dans backend/config/application.yml (fichier local, non partagé),
+  # voir backend/config/application.yml.exemple. Sans identifiants, les codes s'affichent dans le terminal.
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+
+  jackson:
+    # Dates au format texte ISO (2026-11-05, 2026-11-12T10:15:00) et non en nombres
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Africa/Tunis
+
+# --- Paramètres propres à SmartBuy -------------------------------------
+smartbuy:
+  jwt:
+    # Clé secrète de signature des jetons (au moins 32 caractères). À CHANGER en production.
+    secret: ${JWT_SECRET:smartbuy-cle-secrete-de-developpement-a-changer-2026}
+    expiration-heures: 24
+  db:
+    # true : crée les tables et les données au démarrage si la table UTILISATEUR n'existe pas
+    initialiser: ${DB_INIT:true}
+  mail:
+    enabled: ${MAIL_ENABLED:true}
+    # Expéditeur : avec Gmail, mettre la même adresse que spring.mail.username
+    from: ${MAIL_FROM:no-reply@smartbuy.tn}
+  admin:
+    # Adresse réelle de l'administrateur : son compte reçoit le rôle ADMIN (voir PromotionAdmin)
+    email: ${ADMIN_EMAIL:}
+  email:
+    # Refuser les domaines qui ne reçoivent pas d'e-mails (pas d'enregistrement DNS MX)
+    verifier-domaine: true
+  collecte:
+    # Collecte automatique des prix en ligne (Carrefour Tunisie, Spacenet) chaque nuit à 3 h
+    active: ${COLLECTE_ACTIVE:true}
+    cron: "0 0 3 * * *"
+  dev:
+    # Si l'e-mail n'a pas pu partir, écrire le code dans le terminal (pratique en développement).
+    afficher-code-si-echec-email: true
+  ia:
+    # Clé lue UNIQUEMENT depuis l'environnement. Vide = moteur de règles local.
+    api-key: ${ANTHROPIC_API_KEY:}
+    model: ${ANTHROPIC_MODEL:claude-opus-5-5}
+    # Repli côté serveur Anthropic si le modèle refuse de répondre (voir ConseillerClaude)
+    repli-serveur: ${ANTHROPIC_FALLBACK:true}
+    timeout-secondes: 60
+
+logging:
+  level:
+    tn.smartbuy: INFO

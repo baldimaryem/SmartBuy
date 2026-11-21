@@ -1,0 +1,28 @@
+# =====================================================================
+# Configuration LOCALE de l'API SmartBuy (secrets) : modèle à copier.
+#
+# 1. Copier ce fichier en « application.yml » dans ce même dossier (backend/config/).
+# 2. Remplacer les valeurs ci-dessous.
+# 3. Relancer l'API (demarrer-api.bat).
+#
+# Spring Boot lit automatiquement config/application.yml au démarrage (quand on lance depuis backend/).
+# Le fichier application.yml de ce dossier est exclu de Git (.gitignore) : le mot de passe n'est
+# jamais partagé ni écrit dans le code source.
+# =====================================================================
+
+spring:
+  mail:
+    # Votre adresse Gmail réelle
+    username: votre.adresse@gmail.com
+    # Mot de passe d'APPLICATION Google (16 lettres, sans espaces) — PAS votre mot de passe Gmail.
+    # Le créer sur https://myaccount.google.com/apppasswords (la validation en 2 étapes doit être activée).
+    password: abcdefghijklmnop
+
+smartbuy:
+  mail:
+    # Avec Gmail, l'expéditeur doit être la même adresse que spring.mail.username
+    from: votre.adresse@gmail.com
+  admin:
+    # Adresse réelle de l'administrateur : il s'inscrit normalement dans l'application,
+    # confirme son e-mail, et reçoit automatiquement le rôle ADMIN.
+    email: votre.adresse@gmail.com

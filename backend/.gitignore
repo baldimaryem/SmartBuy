@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+.vscode/
+.mvn/wrapper/maven-wrapper.jar
+
+# Secrets locaux (mot de passe Gmail, adresse admin)
+config/application.yml
